@@ -23,9 +23,13 @@ Several sections of the build plan record **refusals**: things the project has c
 Phase 0 needs only the static-analysis tools. The build toolchain arrives with the Phase 1 skeleton.
 
 ```bash
-brew install typos-cli markdownlint-cli2 actionlint gitleaks shellcheck shfmt
-brew install prettier
+brew install typos-cli actionlint gitleaks shellcheck shfmt
+npm ci   # markdownlint and Prettier, at the pinned versions
 ```
+
+markdownlint and Prettier come from `package.json` and the committed `package-lock.json` rather than from Homebrew, so that local runs and CI agree on versions and `npm ci` can enforce per-package integrity. **Do not run the Homebrew `markdownlint-cli2`**: it will be a different version, and a rule difference will then show up only in CI.
+
+That `package.json` exists for those two tools and nothing else. Springer is Zig.
 
 From Phase 1 onward this also needs Zig 0.16.0 exactly (the pin lives in `build.zig.zon` as `minimum_zig_version`), CMake, and `clap-validator`.
 
@@ -34,9 +38,9 @@ From Phase 1 onward this also needs Zig 0.16.0 exactly (the pin lives in `build.
 Everything that runs today is static analysis, and all of it runs in CI too.
 
 ```bash
+npm run lint                   # markdownlint + Prettier, the pinned versions
+npm run lint:fix               # the same, fixing what it can
 typos                          # spell check
-markdownlint-cli2 "**/*.md"    # prose
-prettier --check .             # JSON and YAML only
 actionlint                     # the workflows
 gitleaks detect --no-banner    # secrets
 ```

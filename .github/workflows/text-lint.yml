@@ -25,15 +25,72 @@ permissions:
   contents: read
 
 jobs:
-  # markdownlint and Prettier. cspell is off: typos covers the same ground, and
-  # two spell checkers means two dictionaries to add every scale name to.
+  # markdownlint and Prettier, inlined rather than called.
+  #
+  # This should be `uses: cboone/gh-actions/.../lint-text.yml`, matching the
+  # three jobs below. That workflow is unusable for any caller at v3.0.0: its
+  # tool-install step reads `github.job_workflow_sha`, which arrives empty, and
+  # the step is unconditional, so the job fails before a linter runs. Tracked
+  # as cboone/gh-actions#83, unfixed in any release. Measured here 2026-09-08:
+  # this job failed exactly that way while the three reusable calls below,
+  # made the same way in the same run, all passed. None of them reads that
+  # context value, which is what points at the value rather than the call.
+  #
+  # The workaround is the one cboone/audio-tools already uses: inline the steps
+  # against a committed lockfile. That keeps the property the reusable workflow
+  # was reaching for, since `npm ci` enforces per-package sha512 integrity, and
+  # it makes local runs and CI agree on versions. Switch back to the reusable
+  # call once a release fixes #83.
+  #
+  # cspell is off: typos covers the same ground, and two spell checkers means
+  # two dictionaries to add every scale name to. yamllint is off as well; it is
+  # not part of the Phase 0 gate and its install path reads the same
+  # unpopulated context value.
   text:
-    uses: cboone/gh-actions/.github/workflows/lint-text.yml@91f9abd25d4f82354c0f950dfc8b6d7525b0f5b5 # v3.0.0
-    with:
-      run-markdownlint: true
-      run-prettier: true
-      run-cspell: false
-      run-yamllint: true
+    name: Text lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install lint tools
+        run: npm ci --ignore-scripts --include=dev --no-audit --no-fund
+
+      - name: Run markdownlint
+        id: markdownlint
+        run: npx --no-install markdownlint-cli2 "**/*.md"
+
+      - name: Run Prettier
+        if: ${{ !cancelled() }}
+        id: prettier
+        run: npx --no-install prettier --check .
+
+      - name: Summarize the findings
+        if: failure()
+        run: |
+          {
+            echo "### Text lint"
+            echo
+            if [ "${{ steps.markdownlint.outcome }}" = "failure" ]; then
+              echo '#### markdownlint'
+              echo
+              echo '```text'
+              npx --no-install markdownlint-cli2 "**/*.md" 2>&1 || true
+              echo '```'
+            fi
+            if [ "${{ steps.prettier.outcome }}" = "failure" ]; then
+              echo '#### Prettier'
+              echo
+              echo '```text'
+              npx --no-install prettier --list-different . 2>&1 || true
+              echo '```'
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"
 
   # Passes by finding nothing in Phase 0, which adds no shell scripts. Wired
   # now, exercised from Phase 1.
@@ -62,7 +119,7 @@ jobs:
       TYPOS_VERSION: "1.50.1"
       TYPOS_SHA256: "edf0545109aee6a22751d04ddecb97c45be47d3aa0409564fb895eeeace91b1e"
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Install typos
         run: |

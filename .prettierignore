@@ -15,7 +15,9 @@ docs/design/
 # keeps JSON and YAML and stays out of prose entirely.
 *.md
 
-# Build outputs.
+# Build outputs and dependencies.
+node_modules/
+package-lock.json
 build/
 zig-out/
 zig-pkg/

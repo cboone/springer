@@ -1,0 +1,15 @@
+{
+  "name": "springer-lint-tools",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Lint tooling only. Springer itself is Zig; this exists so CI and local runs agree on markdownlint and Prettier versions, with per-package integrity verified by the committed lockfile.",
+  "license": "MIT",
+  "devDependencies": {
+    "markdownlint-cli2": "0.23.2",
+    "prettier": "3.8.1"
+  },
+  "scripts": {
+    "lint": "markdownlint-cli2 \"**/*.md\" && prettier --check .",
+    "lint:fix": "markdownlint-cli2 --fix \"**/*.md\" && prettier --write ."
+  }
+}

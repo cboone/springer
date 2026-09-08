@@ -21,6 +21,11 @@ token.json
 # Release artifacts, signed and notarized locally
 dist/
 
+# Lint tooling. package.json and package-lock.json ARE tracked: they pin
+# markdownlint and Prettier so CI and local runs agree, with per-package
+# integrity enforced by npm ci. Only the installed tree is ignored.
+node_modules/
+
 # Zig
 .zig-cache/
 zig-out/
