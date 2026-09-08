@@ -241,7 +241,7 @@ Phase 1 deliberately puts the Audio Unit first rather than last. The `aumi` path
 
 ### Phase 0 outcomes (complete)
 
-Executed 2026-09-08. Detailed in [the Phase 0 plan](./2026-09-08-springer-phase-0-repository-foundation.md).
+Executed 2026-09-08. Detailed in [the Phase 0 plan](../done/2026-09-08-springer-phase-0-repository-foundation.md).
 
 | Step | Work                                                                             | Status |
 | ---- | -------------------------------------------------------------------------------- | ------ |

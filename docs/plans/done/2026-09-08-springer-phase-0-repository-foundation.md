@@ -2,7 +2,7 @@
 
 ## Context
 
-[The build plan](./2026-09-08-build-springer-a-diatonic-chord-generator-midi-fx.md) scopes Phase 0 as "Repo foundation: AGENTS.md and CLAUDE.md symlink, `.claude/`, `.github/` workflows and `*.instructions.md`, lint configs, `docs/{adr,design,plans}`, the v4 script preserved verbatim as `docs/design/diatonic-chord-trigger-v4.js`, the thirteen ADRs", gated on "CI green on the scaffolding: markdownlint, typos, gitleaks, shellcheck".
+[The build plan](../todo/2026-09-08-build-springer-a-diatonic-chord-generator-midi-fx.md) scopes Phase 0 as "Repo foundation: AGENTS.md and CLAUDE.md symlink, `.claude/`, `.github/` workflows and `*.instructions.md`, lint configs, `docs/{adr,design,plans}`, the v4 script preserved verbatim as `docs/design/diatonic-chord-trigger-v4.js`, the thirteen ADRs", gated on "CI green on the scaffolding: markdownlint, typos, gitleaks, shellcheck".
 
 The repository currently holds four tracked files: a three-line `.gitignore`, an MIT `LICENSE`, a three-paragraph `README.md`, and the build plan. `docs/design/diatonic-chord-trigger-v4.js` arrived during planning and is the fifth. There is no `.github/`, no `.claude/`, no `AGENTS.md`, no `docs/adr/`, and no build layer of any kind.
 
