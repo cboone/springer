@@ -1,3 +1,33 @@
+# System
+.DS_Store
+
+# Agent config
+.claude/settings.local.json
+
+# Secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.p12
+# App Store Connect API keys, which notarytool takes as --key. Downloadable
+# once and never again, so the copy on disk is the only copy.
+*.p8
+credentials.json
+token.json
+
+# Release artifacts, signed and notarized locally
+dist/
+
+# Zig
 .zig-cache/
 zig-out/
+zig-pkg/
 *.o
+*.d
+*.pdb
+
+# CMake (clap-wrapper builds)
+build/
