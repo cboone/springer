@@ -4,6 +4,9 @@
   "private": true,
   "description": "Lint tooling only. Springer itself is Zig; this exists so CI and local runs agree on markdownlint and Prettier versions, with per-package integrity verified by the committed lockfile.",
   "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
   "devDependencies": {
     "markdownlint-cli2": "0.23.2",
     "prettier": "3.8.1"

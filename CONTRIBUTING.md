@@ -22,6 +22,8 @@ Several sections of the build plan record **refusals**: things the project has c
 
 Phase 0 needs only the static-analysis tools. The build toolchain arrives with the Phase 1 skeleton.
 
+**Node.js 22 or later** is required, because `markdownlint` and `markdownlint-cli2` both declare `engines.node: ">=22"`. CI runs Node 24. `package.json` declares the same constraint and `.npmrc` sets `engine-strict=true`, so `npm ci` fails immediately with `EBADENGINE` on an older runtime rather than installing and failing later inside markdownlint.
+
 ```bash
 brew install typos-cli actionlint gitleaks shellcheck shfmt
 npm ci   # markdownlint and Prettier, at the pinned versions

@@ -94,6 +94,8 @@ Everything that runs today is static analysis.
 
 markdownlint and Prettier are pinned in `package.json` and installed from the committed `package-lock.json`, so local runs and CI agree on versions and `npm ci` enforces per-package integrity. Run them through npm rather than a Homebrew binary, which will be a different version.
 
+Node 22 or later is required, since `markdownlint` and `markdownlint-cli2` both declare `engines.node: ">=22"`. CI runs Node 24. `.npmrc` sets `engine-strict=true`, so an older runtime fails at `npm ci` with `EBADENGINE` rather than surfacing later as a confusing error inside markdownlint.
+
 ```bash
 npm ci                         # once; installs the pinned lint tools
 npm run lint                   # markdownlint + prettier, the pinned versions
