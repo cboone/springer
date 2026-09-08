@@ -1,0 +1,92 @@
+name: Lint
+
+# This workflow carries no paths-ignore, deliberately.
+#
+# A check must not be able to skip the change that governs it. typos.toml,
+# .markdownlint-cli2.jsonc, .prettierignore and this file all live inside the
+# set these jobs scan, and in Phase 0 essentially every change is a Markdown
+# change. The paths-ignore list that Phase 1's ci.yml will correctly carry,
+# skipping docs/** and *.md for a set of macOS builds, would make this workflow
+# green on precisely the pull requests that could fail it.
+#
+# Ubuntu throughout: this is platform-independent static analysis, and the
+# macOS runner bills at ten times the rate.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # markdownlint and Prettier. cspell is off: typos covers the same ground, and
+  # two spell checkers means two dictionaries to add every scale name to.
+  text:
+    uses: cboone/gh-actions/.github/workflows/lint-text.yml@91f9abd25d4f82354c0f950dfc8b6d7525b0f5b5 # v3.0.0
+    with:
+      run-markdownlint: true
+      run-prettier: true
+      run-cspell: false
+      run-yamllint: true
+
+  # Passes by finding nothing in Phase 0, which adds no shell scripts. Wired
+  # now, exercised from Phase 1.
+  #
+  # Phase 1 hazard, recorded in AGENTS.md: this workflow discovers extensionless
+  # scripts only under bin/, scripts/ and script/. The two extensionless scripts
+  # Phase 1 adds under cmake/ would go unlinted, which reads exactly like
+  # passing. Switch to shebang-based discovery when they land:
+  #
+  #   git ls-files -z | xargs -0 shfmt -f | xargs -r shellcheck
+  shell:
+    uses: cboone/gh-actions/.github/workflows/lint-shell.yml@91f9abd25d4f82354c0f950dfc8b6d7525b0f5b5 # v3.0.0
+
+  actions:
+    uses: cboone/gh-actions/.github/workflows/lint-github-actions.yml@91f9abd25d4f82354c0f950dfc8b6d7525b0f5b5 # v3.0.0
+
+  # Inline because no reusable workflow covers typos: lint-text.yml offers
+  # markdownlint, Prettier, cspell and yamllint, and nothing else.
+  typos:
+    name: typos
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      # Pinned by version and by the tarball's SHA256, because a release asset
+      # can be replaced in place under the same tag.
+      TYPOS_VERSION: "1.50.1"
+      TYPOS_SHA256: "edf0545109aee6a22751d04ddecb97c45be47d3aa0409564fb895eeeace91b1e"
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install typos
+        run: |
+          cd "${RUNNER_TEMP}"
+          curl -sSfL -o typos.tar.gz \
+            "https://github.com/crate-ci/typos/releases/download/v${TYPOS_VERSION}/typos-v${TYPOS_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+          echo "${TYPOS_SHA256}  typos.tar.gz" | sha256sum --check --strict -
+          tar -xzf typos.tar.gz ./typos
+          sudo install typos /usr/local/bin/typos
+
+      - name: Report tool version
+        run: typos --version
+
+      - name: Check spelling
+        id: typos
+        run: typos
+
+      - name: Summarize the findings
+        if: failure() && steps.typos.outcome == 'failure'
+        run: |
+          {
+            echo "### typos"
+            echo
+            echo '```text'
+            typos --format brief || true
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
