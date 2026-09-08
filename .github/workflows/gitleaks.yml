@@ -1,0 +1,29 @@
+name: gitleaks
+
+# No paths-ignore, deliberately. A secret can be committed into any file, so
+# there is no path this scan may safely skip.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    uses: cboone/gh-actions/.github/workflows/scan-for-secrets.yml@91f9abd25d4f82354c0f950dfc8b6d7525b0f5b5 # v3.0.0
+    with:
+      tool: gitleaks
+      # Carried from fosforo, which measured 24s max over 29 runs on a
+      # repository of comparable size. Not yet measured here; re-measure from
+      # the Actions API once this repository has run history of its own.
+      #
+      # An input rather than a job key, because the job belongs to the reusable
+      # workflow, whose own default is 15.
+      timeout-minutes: 3

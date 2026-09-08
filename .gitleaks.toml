@@ -1,0 +1,19 @@
+[extend]
+# Use the default gitleaks rules as a base.
+useDefault = true
+
+[allowlist]
+# Paths to exclude from scanning.
+paths = [
+  # Zig pins dependencies by multihash. Those literals look enough like
+  # high-entropy credentials to trip the generic rules, and they are
+  # deliberately public. The file arrives with the build skeleton in Phase 1;
+  # the entry is written now because this allowlist is authored once and the
+  # reason is already known.
+  '''build\.zig\.zon''',
+
+  # CMake and Zig build outputs, including fetched third-party SDKs.
+  '''^build/''',
+  '''^zig-out/''',
+  '''^zig-pkg/''',
+]

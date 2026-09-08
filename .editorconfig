@@ -1,0 +1,37 @@
+# https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# zig fmt is the authority for both. This only keeps editors from fighting it.
+[*.{zig,zon}]
+indent_size = 4
+
+[*.{c,cpp,h,m,mm}]
+indent_size = 4
+
+[CMakeLists.txt]
+indent_size = 4
+
+# markdownlint's MD009 already governs trailing whitespace here and allows the
+# two spaces that mean a hard line break. Nothing relies on that today; this
+# keeps the editor from stripping it before markdownlint can have an opinion.
+[*.md]
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab
+
+# The shell section arrives with the first script in Phase 1. It carries
+# shfmt-specific keys, which shfmt reads from this file natively. That support
+# is all-or-nothing: passing any formatting flag makes shfmt ignore
+# .editorconfig entirely, so `shfmt -d` is correct and `shfmt -i 2 -d` silently
+# is not. Scripts under scripts/ and cmake/ have no extension, so a bare [*.sh]
+# section would not reach them and each has to be named individually.
