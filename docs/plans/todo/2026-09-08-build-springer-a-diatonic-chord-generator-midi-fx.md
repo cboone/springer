@@ -44,7 +44,7 @@ A host writes these into project files, so changing one after release makes the 
 
 | Thing                | Value                    | Note                                                     |
 | -------------------- | ------------------------ | -------------------------------------------------------- |
-| Repository           | `scaler`                 | Stays as-is; the product name diverges on purpose.       |
+| Repository           | `springer`               | Renamed from `scaler`; matches the product name.         |
 | Product name (ASCII) | `Springer`               | Names files, binaries, and bundles.                      |
 | Display name         | `Springer`               | No diacritic, so the two agree.                          |
 | CLAP id              | `com.catamount.springer` | Vendor identity shared with fosforo.                     |
