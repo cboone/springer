@@ -1,0 +1,22 @@
+# Preserved verbatim as the normative statement of the plugin's behavior.
+#
+# docs/design/diatonic-chord-trigger-v4.js is the Logic Pro Scripter script
+# Springer is rebuilt from, and Phase 2 generates its reference vectors by
+# running this exact file under Node. Prettier formats .js, so without this
+# entry CI would demand a reformat of a historical record, and the vectors
+# would then be measured against something other than what shipped.
+docs/design/
+
+# markdownlint owns Markdown, uncontested.
+#
+# Prettier reflows tables and normalises emphasis characters, which contends
+# with MD060's aligned table style and with MD049/MD050. Two formatters with
+# opinions about the same file is one more than can be satisfied, so Prettier
+# keeps JSON and YAML and stays out of prose entirely.
+*.md
+
+# Build outputs.
+build/
+zig-out/
+zig-pkg/
+.zig-cache/
