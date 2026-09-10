@@ -102,10 +102,10 @@ jobs:
   #
   #   git ls-files -z | xargs -0 shfmt -f | xargs -r shellcheck
   shell:
-    uses: cboone/gh-actions/.github/workflows/lint-shell.yml@91f9abd25d4f82354c0f950dfc8b6d7525b0f5b5 # v3.0.0
+    uses: cboone/gh-actions/.github/workflows/lint-shell.yml@844bf31d4ec26df9d0aa531e79d8c3fccf9f0638 # v3.1.0
 
   actions:
-    uses: cboone/gh-actions/.github/workflows/lint-github-actions.yml@91f9abd25d4f82354c0f950dfc8b6d7525b0f5b5 # v3.0.0
+    uses: cboone/gh-actions/.github/workflows/lint-github-actions.yml@844bf31d4ec26df9d0aa531e79d8c3fccf9f0638 # v3.1.0
 
   # Inline because no reusable workflow covers typos: lint-text.yml offers
   # markdownlint, Prettier, cspell and yamllint, and nothing else.
